@@ -1,0 +1,14 @@
+export { CinematicHero } from './CinematicHero';
+export { HeroAtmosphere } from './HeroAtmosphere';
+export { HeroContent } from './HeroContent';
+export { ProductReveal } from './ProductReveal';
+export { useHeroPointer } from './HeroPointer';
+export { useVideoScrubber } from './VideoScrubber';
+export { CinematicTimeline } from './CinematicTimeline';
+export type { CinematicHeroProps } from './CinematicHero';
+export type { HeroAtmosphereProps } from './HeroAtmosphere';
+export type { HeroContentProps } from './HeroContent';
+export type { ProductRevealProps } from './ProductReveal';
+export type { HeroPointerOptions, HeroPointerReturn, PointerPosition } from './HeroPointer';
+export type { VideoScrubberOptions, VideoScrubberReturn } from './VideoScrubber';
+export type { CinematicPhase, CinematicTimelineProps } from './CinematicTimeline';
