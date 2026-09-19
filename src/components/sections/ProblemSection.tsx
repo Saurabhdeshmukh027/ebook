@@ -212,6 +212,25 @@ export function ProblemSection({
             position: static !important;
           }
         }
+        @media (max-width: 768px) {
+          .problem-section {
+            padding: 3.5rem 1.25rem !important;
+          }
+          .problem-visual {
+            gap: 1.75rem !important;
+          }
+          .problem-steps {
+            gap: 0.625rem !important;
+          }
+          .problem-step {
+            padding: 0.75rem 1rem !important;
+          }
+          .paper-pavti {
+            width: min(320px, 92vw) !important;
+            padding: 1.25rem 1rem !important;
+            gap: 0.875rem !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .problem-eyebrow,
           .problem-headline,

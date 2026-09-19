@@ -342,13 +342,32 @@ export function BenefitPayments({
       </div>
 
       <style>{`
-        .benefit-grid {
-          @media (max-width: 1024px) {
+        @media (max-width: 1024px) {
+          .benefit-grid {
             grid-template-columns: 1fr !important;
-            gap: 3rem !important;
+            gap: 2.5rem !important;
           }
-          @media (max-width: 768px) {
+        }
+        @media (max-width: 768px) {
+          .benefit-payments {
+            padding: 2.75rem 1.25rem !important;
+          }
+          .benefit-grid {
             grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+          }
+          .payment-arrow {
+            width: 28px !important;
+          }
+          .payment-plans {
+            flex-direction: column !important;
+            gap: 1rem !important;
+            margin-top: 1.25rem !important;
+          }
+          .plan-card {
+            min-width: auto !important;
+            width: 100% !important;
+            padding: 1rem 1.25rem !important;
           }
         }
         @media (prefers-reduced-motion: reduce) {

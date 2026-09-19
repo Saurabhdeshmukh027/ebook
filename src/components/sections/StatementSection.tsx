@@ -171,6 +171,20 @@ export function StatementSection({
       />
 
       <style>{`
+        @media (max-width: 768px) {
+          .statement-section {
+            padding: 3.5rem 1.25rem !important;
+          }
+          .statement-eyebrow {
+            margin-bottom: 0.875rem !important;
+          }
+          .statement-headline {
+            margin-bottom: 1rem !important;
+          }
+          .statement-subheadline {
+            margin-bottom: 1.5rem !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .statement-eyebrow,
           .statement-headline,

@@ -308,6 +308,23 @@ export function DigitalPavtiTransform({
             padding: 2rem 0 !important;
           }
         }
+        @media (max-width: 768px) {
+          .digital-pavti-transform {
+            padding: 3.5rem 1.25rem !important;
+            min-height: 75svh !important;
+          }
+          .transform-header {
+            margin-bottom: 2rem !important;
+          }
+          .transform-caption {
+            margin-top: 1.5rem !important;
+            padding: 0 !important;
+          }
+          .transform-pavti {
+            width: min(300px, 88vw) !important;
+            padding: 1.25rem 1rem !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .transform-pavti {
             transition: none !important;

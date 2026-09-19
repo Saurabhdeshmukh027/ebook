@@ -282,6 +282,29 @@ export function BalanceSection({
       </div>
 
       <style>{`
+        @media (max-width: 768px) {
+          .balance-section {
+            padding: 3.5rem 1.25rem !important;
+          }
+          .balance-visual {
+            gap: 0.75rem !important;
+          }
+          .balance-card {
+            padding: 1.25rem 1.25rem !important;
+            min-width: auto !important;
+            width: min(340px, 92vw) !important;
+          }
+          .balance-operator,
+          .balance-equals {
+            width: 44px !important;
+            height: 44px !important;
+            margin-top: 0.25rem !important;
+          }
+          .balance-note {
+            margin-top: 1.25rem !important;
+            padding: 1rem 1.25rem !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .balance-card,
           .balance-operator,

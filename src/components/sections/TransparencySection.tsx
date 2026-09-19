@@ -262,9 +262,18 @@ const TransparencySection = forwardRef<HTMLElement, TransparencySectionProps>(
               grid-template-columns: repeat(2, 1fr) !important;
             }
           }
-          @media (max-width: 640px) {
+          @media (max-width: 768px) {
+            .transparency-section {
+              padding: 3.5rem 1.25rem !important;
+            }
             .transparency-pillars {
-              grid-template-columns: 1fr !important;
+              gap: 0.875rem !important;
+            }
+            .transparency-pillar {
+              padding: 1.25rem 1rem !important;
+            }
+            .unified-record {
+              grid-template-columns: repeat(2, 1fr) !important;
             }
           }
           @media (prefers-reduced-motion: reduce) {

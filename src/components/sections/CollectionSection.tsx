@@ -258,6 +258,21 @@ export function CollectionSection({
             position: static !important;
           }
         }
+        @media (max-width: 768px) {
+          .collection-section {
+            padding: 3.5rem 1.25rem !important;
+          }
+          .collection-visual {
+            gap: 1.75rem !important;
+          }
+          .collection-step {
+            padding: 0.75rem 1rem !important;
+            gap: 0.75rem !important;
+          }
+          .collection-display {
+            padding: 1.25rem 1rem !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .collection-step,
           .collection-total-amount {

@@ -75,14 +75,15 @@ export function Navigation({ className = '', currentLanguage = 'en', onLanguageC
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap', flexShrink: 0 }}>
         <span
           style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: '1.5rem',
+            fontSize: 'clamp(1.125rem, 3.5vw, 1.5rem)',
             fontWeight: 600,
             color: 'var(--color-paper)',
             letterSpacing: '-0.01em',
+            whiteSpace: 'nowrap',
           }}
         >
           E-PavtiBook
@@ -97,6 +98,7 @@ export function Navigation({ className = '', currentLanguage = 'en', onLanguageC
             backgroundColor: 'rgba(232, 149, 30, 0.1)',
             padding: '0.125rem 0.5rem',
             borderRadius: '2px',
+            whiteSpace: 'nowrap',
           }}
         >
           Mandal
@@ -290,9 +292,20 @@ export function Navigation({ className = '', currentLanguage = 'en', onLanguageC
 
       <style>{`
         @media (max-width: 768px) {
+          .navigation {
+            padding: 0.75rem 1rem !important;
+            height: 64px !important;
+          }
+          .nav-actions {
+            gap: 0.5rem !important;
+          }
+          .nav-actions .nav-cta {
+            padding: 0.45rem 0.85rem !important;
+            font-size: 0.8125rem !important;
+          }
           .nav-links {
             position: absolute;
-            top: 72px;
+            top: 64px;
             left: 0;
             right: 0;
             background: rgba(10, 10, 10, 0.98);
@@ -320,7 +333,7 @@ export function Navigation({ className = '', currentLanguage = 'en', onLanguageC
           .nav-language {
             display: none;
           }
-          .nav-cta {
+          .nav-links .nav-cta {
             width: 100%;
             text-align: center;
           }

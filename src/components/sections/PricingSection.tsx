@@ -8,7 +8,7 @@ export interface PricingSectionProps {
 
 export function PricingSection({ language = 'en', className = '' }: PricingSectionProps) {
   return (
-    <main className={`pricing-section ${className}`} style={{ position: 'relative' }}>
+    <div className={`pricing-section ${className}`} style={{ position: 'relative' }}>
       <PricingTransition language={language} />
 
       <section
@@ -42,15 +42,27 @@ export function PricingSection({ language = 'en', className = '' }: PricingSecti
         <style>{`
           @media (max-width: 1024px) {
             .pricing-grid {
-              grid-template-columns: 1fr !important;
-              gap: 1.5rem !important;
-              max-width: 420px;
-              margin: 0 auto;
+              grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+              gap: 0.75rem !important;
+              max-width: 100% !important;
             }
           }
-          @media (max-width: 640px) {
+          @media (max-width: 768px) {
             .pricing-cards {
-              padding: 3rem 1.5rem 5rem !important;
+              padding: 2.5rem 0.5rem 3.5rem !important;
+            }
+            .pricing-grid {
+              grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+              gap: 6px !important;
+              max-width: 100% !important;
+            }
+          }
+          @media (max-width: 360px) {
+            .pricing-cards {
+              padding: 2rem 0.25rem 3rem !important;
+            }
+            .pricing-grid {
+              gap: 4px !important;
             }
           }
           @media (prefers-reduced-motion: reduce) {
@@ -60,6 +72,6 @@ export function PricingSection({ language = 'en', className = '' }: PricingSecti
           }
         `}</style>
       </section>
-    </main>
+    </div>
   );
 }

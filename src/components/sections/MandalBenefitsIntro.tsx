@@ -220,6 +220,15 @@ export function MandalBenefitsIntro({
       </div>
 
       <style>{`
+        @media (max-width: 768px) {
+          .mandal-benefits-intro {
+            padding: 3.5rem 1.25rem !important;
+          }
+          .benefits-index {
+            gap: 0.35rem !important;
+            margin-top: 1.5rem !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .benefits-eyebrow,
           .benefits-headline,

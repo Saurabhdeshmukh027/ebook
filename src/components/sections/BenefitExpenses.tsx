@@ -270,13 +270,25 @@ export function BenefitExpenses({
       </div>
 
       <style>{`
-        .benefit-grid {
-          @media (max-width: 1024px) {
+        @media (max-width: 1024px) {
+          .benefit-grid {
             grid-template-columns: 1fr !important;
-            gap: 3rem !important;
+            gap: 2.5rem !important;
           }
-          @media (max-width: 768px) {
+        }
+        @media (max-width: 768px) {
+          .benefit-expenses {
+            padding: 2.75rem 1.25rem !important;
+          }
+          .benefit-grid {
             grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+          }
+          .expense-entry {
+            padding: 0.75rem 0.875rem !important;
+          }
+          .expense-total {
+            padding: 1rem 1.25rem !important;
           }
         }
         @media (prefers-reduced-motion: reduce) {

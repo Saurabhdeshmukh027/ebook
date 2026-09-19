@@ -253,9 +253,19 @@ const BenefitTransparency = forwardRef<HTMLElement, BenefitTransparencyProps>(
               grid-template-columns: repeat(2, 1fr) !important;
             }
           }
-          @media (max-width: 640px) {
+          @media (max-width: 768px) {
+            .benefit-transparency {
+              padding: 2.75rem 1.25rem !important;
+            }
             .transparency-pillars {
-              grid-template-columns: 1fr !important;
+              grid-template-columns: repeat(2, 1fr) !important;
+              gap: 0.875rem !important;
+            }
+            .transparency-pillar {
+              padding: 1rem 0.875rem !important;
+            }
+            .unified-record {
+              grid-template-columns: repeat(2, 1fr) !important;
             }
           }
           @media (prefers-reduced-motion: reduce) {

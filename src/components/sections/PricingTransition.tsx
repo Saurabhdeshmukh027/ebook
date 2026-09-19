@@ -42,10 +42,24 @@ export function PricingTransition({
       return;
     }
 
+    if (typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(sectionRef.current);
+      return () => observer.disconnect();
+    }
+
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: 'top 70%',
+        start: 'top 85%',
         onEnter: () => setIsVisible(true),
         once: true,
       });
@@ -112,6 +126,11 @@ export function PricingTransition({
       </div>
 
       <style>{`
+        @media (max-width: 768px) {
+          .pricing-transition {
+            padding: 3.5rem 1.25rem 1.5rem !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .transition-headline,
           .transition-subheadline {

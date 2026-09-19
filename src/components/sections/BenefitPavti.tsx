@@ -213,13 +213,23 @@ export function BenefitPavti({
       </div>
 
       <style>{`
-        .benefit-grid {
-          @media (max-width: 1024px) {
+        @media (max-width: 1024px) {
+          .benefit-grid {
             grid-template-columns: 1fr !important;
-            gap: 3rem !important;
+            gap: 2.5rem !important;
           }
-          @media (max-width: 768px) {
+        }
+        @media (max-width: 768px) {
+          .benefit-pavti {
+            padding: 2.75rem 1.25rem !important;
+          }
+          .benefit-grid {
             grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+          }
+          .digital-pavti-showcase {
+            width: min(320px, 92vw) !important;
+            padding: 1.25rem 1rem !important;
           }
         }
         @media (prefers-reduced-motion: reduce) {

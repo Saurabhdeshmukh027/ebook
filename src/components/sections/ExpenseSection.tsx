@@ -364,6 +364,26 @@ export function ExpenseSection({
             position: static !important;
           }
         }
+        @media (max-width: 768px) {
+          .expense-section {
+            padding: 3.5rem 1.25rem !important;
+          }
+          .expense-visual {
+            gap: 1.75rem !important;
+          }
+          .expense-entries {
+            gap: 0.625rem !important;
+          }
+          .expense-entry {
+            padding: 0.75rem 1rem !important;
+          }
+          .expense-total-row {
+            padding: 1rem !important;
+          }
+          .expense-summary {
+            gap: 1rem !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .expense-entry {
             transition: none !important;

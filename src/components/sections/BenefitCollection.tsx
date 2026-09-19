@@ -295,13 +295,27 @@ export function BenefitCollection({
       </div>
 
       <style>{`
-        .benefit-grid {
-          @media (max-width: 1024px) {
+        @media (max-width: 1024px) {
+          .benefit-grid {
             grid-template-columns: 1fr !important;
-            gap: 3rem !important;
+            gap: 2.5rem !important;
           }
-          @media (max-width: 768px) {
+        }
+        @media (max-width: 768px) {
+          .benefit-collection {
+            padding: 2.75rem 1.25rem !important;
+          }
+          .benefit-grid {
             grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+          }
+          .flow-icon {
+            width: 54px !important;
+            height: 54px !important;
+          }
+          .collection-total {
+            margin-top: 1.25rem !important;
+            padding: 1.25rem !important;
           }
         }
         @media (prefers-reduced-motion: reduce) {

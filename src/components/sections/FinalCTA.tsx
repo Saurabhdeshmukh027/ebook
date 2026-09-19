@@ -55,10 +55,24 @@ export function FinalCTA({
       return;
     }
 
+    if (typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(sectionRef.current);
+      return () => observer.disconnect();
+    }
+
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: 'top 75%',
+        start: 'top 85%',
         onEnter: () => setIsVisible(true),
         once: true,
       });
@@ -242,6 +256,21 @@ export function FinalCTA({
       />
 
       <style>{`
+        @media (max-width: 768px) {
+          .final-cta {
+            padding: 4.5rem 1.25rem 5rem !important;
+          }
+          .cta-buttons {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            max-width: 320px;
+            margin-left: auto !important;
+            margin-right: auto !important;
+          }
+          .cta-buttons button {
+            width: 100% !important;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
           .cta-headline,
           .cta-subheadline,
