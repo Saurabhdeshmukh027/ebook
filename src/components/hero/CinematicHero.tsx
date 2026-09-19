@@ -57,16 +57,16 @@ export function CinematicHero({
     containerSelector: '[data-cinematic-hero]',
   });
 
+  // ── Reveal hero content smoothly on mount without waiting for 6MB video stream ──
+  useEffect(() => {
+    const timer = setTimeout(() => setIsContentVisible(true), 80);
+    return () => clearTimeout(timer);
+  }, []);
+
   // ── Video loaded gate ──
   const handleVideoLoaded = useCallback(() => {
     setIsVideoReady(true);
-    if (!prefersReducedMotion) {
-      const timer = setTimeout(() => setIsContentVisible(true), 400);
-      return () => clearTimeout(timer);
-    } else {
-      setIsContentVisible(true);
-    }
-  }, [prefersReducedMotion]);
+  }, []);
 
   // ── Scroll tracking for indicator dismissal ──
   useEffect(() => {
@@ -77,7 +77,7 @@ export function CinematicHero({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ── Continuous slow video playback initialization ──
+  // ── Continuous slow video playback initialization with mobile touch fallback ──
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -95,20 +95,32 @@ export function CinematicHero({
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise.catch((err) => {
-          console.warn('Autoplay pending user interaction:', err);
+          console.debug('Autoplay deferred on mobile:', err);
         });
       }
     };
 
     startPlay();
 
-    // Re-verify playback rate on loaded metadata & canplay
+    // Re-verify playback rate on loaded metadata, canplay, and playing
     video.addEventListener('loadedmetadata', startPlay);
     video.addEventListener('canplay', startPlay);
+    video.addEventListener('playing', () => setIsVideoReady(true));
+
+    // Interaction fallback: first mobile tap/scroll starts video playback if blocked by power-saver
+    const touchEvents = ['touchstart', 'pointerdown', 'touchend', 'scroll', 'click'];
+    const handleFirstInteraction = () => {
+      startPlay();
+      touchEvents.forEach((evt) => window.removeEventListener(evt, handleFirstInteraction));
+    };
+    touchEvents.forEach((evt) => {
+      window.addEventListener(evt, handleFirstInteraction, { once: true, passive: true });
+    });
 
     return () => {
       video.removeEventListener('loadedmetadata', startPlay);
       video.removeEventListener('canplay', startPlay);
+      touchEvents.forEach((evt) => window.removeEventListener(evt, handleFirstInteraction));
     };
   }, [prefersReducedMotion]);
 
@@ -128,7 +140,6 @@ export function CinematicHero({
 
         videoLayerRef.current.style.transform =
           `translate3d(${videoTranslateX}px, ${videoTranslateY}px, 0) scale(${scale})`;
-        videoLayerRef.current.style.opacity = isVideoReady ? '1' : '0';
       }
 
       // ── Atmosphere wrapper: slightly deeper mouse parallax ──
@@ -153,7 +164,7 @@ export function CinematicHero({
 
     gsap.ticker.add(tickerFn);
     return () => gsap.ticker.remove(tickerFn);
-  }, [prefersReducedMotion, isVideoReady, pointerRef]);
+  }, [prefersReducedMotion, pointerRef]);
 
   const handleIndicatorClick = useCallback(() => {
     scrollTo('#product');
@@ -177,7 +188,25 @@ export function CinematicHero({
       aria-label="Cinematic Durga Mata opening sequence"
       role="region"
     >
-      {/* Video Layer — Continuous playback with watermark removal scale */}
+      {/* Instant Base Poster Layer — Renders immediately at 0ms, preventing any black screen */}
+      <div
+        className="hero-poster-base"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 4,
+          backgroundImage: `url(${POSTER_SRC})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 35%',
+          backgroundRepeat: 'no-repeat',
+          transform: 'scale(1.12)',
+          transformOrigin: '50% 40%',
+          willChange: prefersReducedMotion ? 'auto' : 'transform',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Video Layer — Continuous playback crossfading smoothly over the poster */}
       <div
         ref={videoLayerRef}
         className="hero-video-wrapper"
@@ -188,7 +217,8 @@ export function CinematicHero({
           overflow: 'hidden',
           willChange: prefersReducedMotion ? 'auto' : 'transform, opacity',
           transformOrigin: '50% 40%',
-          opacity: 0,
+          opacity: isVideoReady ? 1 : 0,
+          transition: 'opacity 0.8s ease-in-out',
         }}
       >
         <CinematicVideo
@@ -268,7 +298,7 @@ export function CinematicHero({
           enableHaze={true}
           enableDepth={true}
           enableGrain={!prefersReducedMotion}
-          isVideoReady={isVideoReady}
+          isVideoReady={true}
           velocity={0}
         />
       </div>
@@ -292,7 +322,7 @@ export function CinematicHero({
 
       {/* Localized Scroll Indicator — gracefully fades on scroll, scrolls to #product on click */}
       <CinematicScrollIndicator
-        isVisible={isVideoReady && isContentVisible && !isScrolledPastHero}
+        isVisible={isContentVisible && !isScrolledPastHero}
         language={language}
         onClick={handleIndicatorClick}
       />
@@ -303,6 +333,17 @@ export function CinematicHero({
         }
         .hero-video {
           image-rendering: optimizeQuality;
+        }
+        @keyframes hero-ambient-breathe {
+          0%, 100% {
+            transform: scale(1.12) translate3d(0, 0, 0);
+          }
+          50% {
+            transform: scale(1.145) translate3d(0, -3px, 0);
+          }
+        }
+        .hero-poster-base {
+          animation: hero-ambient-breathe 14s ease-in-out infinite;
         }
         @media (max-width: 768px) {
           .cinematic-hero {
@@ -318,7 +359,8 @@ export function CinematicHero({
           .hero-video,
           .hero-atmosphere,
           .hero-content-wrapper,
-          .hero-video-wrapper {
+          .hero-video-wrapper,
+          .hero-poster-base {
             transition: none !important;
             animation: none !important;
             transform: none !important;

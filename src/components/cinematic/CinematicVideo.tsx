@@ -171,13 +171,24 @@ const CinematicVideoComponent = forwardRef<HTMLVideoElement, CinematicVideoProps
   ) => {
     const internalRef = useRef<HTMLVideoElement | null>(null);
     const [isReducedMotion, setIsReducedMotion] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
       setIsReducedMotion(mediaQuery.matches);
       const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
       mediaQuery.addEventListener('change', handler);
-      return () => mediaQuery.removeEventListener('change', handler);
+
+      const checkMobile = () => {
+        setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
+      };
+      checkMobile();
+      window.addEventListener('resize', checkMobile);
+
+      return () => {
+        mediaQuery.removeEventListener('change', handler);
+        window.removeEventListener('resize', checkMobile);
+      };
     }, []);
 
     useEffect(() => {
@@ -194,18 +205,52 @@ const CinematicVideoComponent = forwardRef<HTMLVideoElement, CinematicVideoProps
       const video = internalRef.current;
       if (!video) return;
 
+      // Enforce native DOM properties for strict mobile Safari/Android autoplay
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.setAttribute('muted', '');
+      if (autoplay) {
+        video.setAttribute('autoplay', '');
+      }
+
       if (playbackRate !== undefined && playbackRate > 0) {
         video.playbackRate = playbackRate;
       }
 
-      if (autoplay && !isReducedMotion) {
+      const attemptPlay = () => {
+        if (!video || isReducedMotion) return;
+        if (playbackRate !== undefined && playbackRate > 0) {
+          video.playbackRate = playbackRate;
+        }
         const playPromise = video.play();
         if (playPromise !== undefined) {
           playPromise.catch((err) => {
-            console.warn('Autoplay prevented or pending interaction:', err);
+            // Autoplay deferred by browser policy; fallback interaction listeners will resume
+            console.debug('Autoplay deferred:', err);
           });
         }
+      };
+
+      if (autoplay && !isReducedMotion) {
+        attemptPlay();
       }
+
+      // Interaction fallback: first tap/scroll/touch immediately starts playback on mobile
+      const interactionEvents = ['touchstart', 'pointerdown', 'touchend', 'scroll', 'click'];
+      const onFirstInteraction = () => {
+        attemptPlay();
+        interactionEvents.forEach((evt) => window.removeEventListener(evt, onFirstInteraction));
+      };
+      interactionEvents.forEach((evt) => {
+        window.addEventListener(evt, onFirstInteraction, { once: true, passive: true });
+      });
+
+      return () => {
+        interactionEvents.forEach((evt) => window.removeEventListener(evt, onFirstInteraction));
+      };
     }, [autoplay, playbackRate, isReducedMotion]);
 
     if (isReducedMotion && poster) {
@@ -225,6 +270,9 @@ const CinematicVideoComponent = forwardRef<HTMLVideoElement, CinematicVideoProps
       );
     }
 
+    // Adaptive preload: 'metadata' on mobile to avoid 6.25MB connection choke
+    const effectivePreload = isMobile ? 'metadata' : preload;
+
     return (
       <video
         ref={internalRef}
@@ -234,17 +282,20 @@ const CinematicVideoComponent = forwardRef<HTMLVideoElement, CinematicVideoProps
         muted={muted}
         playsInline={playsInline}
         loop={loop}
-        preload={preload}
+        preload={effectivePreload}
         poster={poster}
         autoPlay={autoplay}
         onLoadedMetadata={() => onLoad?.()}
+        onLoadedData={() => onLoad?.()}
         onCanPlay={() => onLoad?.()}
+        onPlaying={() => onLoad?.()}
         onError={() => onError?.(new Error('Video failed to load'))}
         onEnded={onEnded}
         onPlay={onPlay}
         onPause={onPause}
         onTimeUpdate={(e) => onTimeUpdate?.(e.currentTarget.currentTime, e.currentTarget.duration)}
         aria-hidden="true"
+        {...({ 'webkit-playsinline': 'true' } as Record<string, string>)}
       >
         <track kind="captions" label="English" srcLang="en" default />
       </video>

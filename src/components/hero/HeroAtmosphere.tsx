@@ -21,17 +21,17 @@ export function HeroAtmosphere({
   enableGrain = true,
   className = '',
   style,
-  isVideoReady = false,
+  isVideoReady: _isVideoReady = false,
   velocity = 0,
 }: HeroAtmosphereProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [opacity, setOpacity] = useState(0);
 
   useEffect(() => {
-    if (isVideoReady) {
-      setOpacity(1);
-    }
-  }, [isVideoReady]);
+    // Reveal atmosphere immediately on mount so golden haze, vignette, and embers are active from 0ms
+    const timer = setTimeout(() => setOpacity(1), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   if (prefersReducedMotion) {
     return null;

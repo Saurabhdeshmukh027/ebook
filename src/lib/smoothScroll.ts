@@ -74,10 +74,9 @@ export function initSmoothScroll(): Lenis | null {
     duration: mobile ? 1.0 : 1.2,
     easing: (t: number) => 1 - Math.pow(1 - t, 3), // ease-out cubic
     wheelMultiplier: mobile ? 0.8 : 1,
-    touchMultiplier: mobile ? 1.5 : 2,
-    touchInertiaMultiplier: 35,
-    syncTouch: true,
-    syncTouchLerp: 0.06,
+    touchMultiplier: 1,
+    // Critical: NEVER hijack mobile touch gestures with syncTouch; let mobile use native 120Hz/60Hz hardware momentum
+    syncTouch: false,
     // Lenis v1.1+ normalizes wheel delta
   });
 
@@ -97,13 +96,16 @@ export function initSmoothScroll(): Lenis | null {
   // from causing sudden jumps
   gsap.ticker.lagSmoothing(0);
 
-  // ── Connect Lenis scroll events to ScrollTrigger ──
+  // ── Connect Lenis and native scroll events to ScrollTrigger ──
   lenis.on('scroll', ScrollTrigger.update);
+  window.addEventListener('scroll', ScrollTrigger.update, { passive: true });
 
   return lenis;
 }
 
 export function destroySmoothScroll(): void {
+  window.removeEventListener('scroll', ScrollTrigger.update);
+
   if (tickerCallback) {
     gsap.ticker.remove(tickerCallback);
     tickerCallback = null;
