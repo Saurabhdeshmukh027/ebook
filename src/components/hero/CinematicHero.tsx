@@ -78,51 +78,14 @@ export function CinematicHero({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ── Continuous slow video playback initialization with mobile touch fallback ──
+  // ── Sync reduced-motion state with video playback ──
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     if (prefersReducedMotion) {
       video.pause();
-      return;
     }
-
-    // Set slow cinematic playback rate (~0.5x)
-    video.playbackRate = 0.5;
-
-    const startPlay = () => {
-      video.playbackRate = 0.5;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          console.debug('Autoplay deferred on mobile:', err);
-        });
-      }
-    };
-
-    startPlay();
-
-    // Re-verify playback rate on loaded metadata, canplay, and playing
-    video.addEventListener('loadedmetadata', startPlay);
-    video.addEventListener('canplay', startPlay);
-    video.addEventListener('playing', () => setIsVideoReady(true));
-
-    // Interaction fallback: first mobile tap/scroll starts video playback if blocked by power-saver
-    const touchEvents = ['touchstart', 'pointerdown', 'touchend', 'scroll', 'click'];
-    const handleFirstInteraction = () => {
-      startPlay();
-      touchEvents.forEach((evt) => window.removeEventListener(evt, handleFirstInteraction));
-    };
-    touchEvents.forEach((evt) => {
-      window.addEventListener(evt, handleFirstInteraction, { once: true, passive: true });
-    });
-
-    return () => {
-      video.removeEventListener('loadedmetadata', startPlay);
-      video.removeEventListener('canplay', startPlay);
-      touchEvents.forEach((evt) => window.removeEventListener(evt, handleFirstInteraction));
-    };
   }, [prefersReducedMotion]);
 
   // ── GSAP Ticker: Pointer Parallax + Elegant Scroll Parallax Exit ──
@@ -176,15 +139,6 @@ export function CinematicHero({
       ref={heroRef}
       id="hero"
       className={`cinematic-hero ${className}`}
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100svh',
-        minHeight: '600px',
-        overflow: 'hidden',
-        backgroundColor: '#0A0A0A',
-        contain: 'layout style paint',
-      }}
       data-cinematic-hero
       aria-label="Cinematic Durga Mata opening sequence"
       role="region"
@@ -237,6 +191,7 @@ export function CinematicHero({
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+            objectPosition: 'center 35%',
             transform: 'scale(1.12)',
             transformOrigin: '50% 40%',
             filter: videoError ? 'grayscale(0.3) brightness(0.7)' : 'none',
@@ -330,10 +285,19 @@ export function CinematicHero({
 
       <style>{`
         .cinematic-hero {
+          position: relative;
+          width: 100%;
+          height: 100svh;
+          min-height: 600px;
+          overflow: hidden;
+          background-color: #0A0A0A;
+          contain: layout style paint;
           isolation: isolate;
         }
         .hero-video {
           image-rendering: optimizeQuality;
+          object-position: center 35%;
+          object-fit: cover;
         }
         @keyframes hero-ambient-breathe {
           0%, 100% {
@@ -351,9 +315,13 @@ export function CinematicHero({
             height: 100dvh;
             min-height: 520px;
           }
-          .hero-video {
-            object-position: center 35%;
-            object-fit: cover;
+          .hero-ambient-vignette {
+            opacity: 0.9;
+          }
+        }
+        @media (max-width: 480px) {
+          .cinematic-hero {
+            min-height: 480px;
           }
         }
         @media (prefers-reduced-motion: reduce) {

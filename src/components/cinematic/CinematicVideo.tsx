@@ -273,6 +273,13 @@ const CinematicVideoComponent = forwardRef<HTMLVideoElement, CinematicVideoProps
     // Adaptive preload: 'metadata' on mobile to avoid 6.25MB connection choke
     const effectivePreload = isMobile ? 'metadata' : preload;
 
+    // Frame readiness gate: Only notify parent when actual video frames are rendering
+    const handleFrameReady = (videoEl: HTMLVideoElement) => {
+      if (!videoEl.paused || videoEl.currentTime > 0) {
+        onLoad?.();
+      }
+    };
+
     return (
       <video
         ref={internalRef}
@@ -285,15 +292,26 @@ const CinematicVideoComponent = forwardRef<HTMLVideoElement, CinematicVideoProps
         preload={effectivePreload}
         poster={poster}
         autoPlay={autoplay}
-        onLoadedMetadata={() => onLoad?.()}
-        onLoadedData={() => onLoad?.()}
-        onCanPlay={() => onLoad?.()}
-        onPlaying={() => onLoad?.()}
+        onCanPlayThrough={(e) => {
+          if (!e.currentTarget.paused) {
+            handleFrameReady(e.currentTarget);
+          }
+        }}
+        onPlaying={(e) => {
+          handleFrameReady(e.currentTarget);
+          onPlay?.();
+        }}
+        onPause={onPause}
+        onTimeUpdate={(e) => {
+          const vid = e.currentTarget;
+          if (vid.currentTime > 0) {
+            handleFrameReady(vid);
+          }
+          onTimeUpdate?.(vid.currentTime, vid.duration);
+        }}
         onError={() => onError?.(new Error('Video failed to load'))}
         onEnded={onEnded}
         onPlay={onPlay}
-        onPause={onPause}
-        onTimeUpdate={(e) => onTimeUpdate?.(e.currentTarget.currentTime, e.currentTarget.duration)}
         aria-hidden="true"
         {...({ 'webkit-playsinline': 'true' } as Record<string, string>)}
       >

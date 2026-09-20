@@ -53,6 +53,24 @@ function isMobileDevice(): boolean {
   return window.innerWidth <= 768 || 'ontouchstart' in window;
 }
 
+// ─── Dynamic mobile viewport & font readiness handling ──────────────────────
+
+let viewportDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let lastViewportHeight = typeof window !== 'undefined' && window.visualViewport ? window.visualViewport.height : 0;
+
+function handleViewportChange(): void {
+  if (typeof window === 'undefined') return;
+  const currentH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  // Trigger only on meaningful height changes (> 40px, e.g. address bar collapse or orientation)
+  if (Math.abs(currentH - lastViewportHeight) > 40) {
+    lastViewportHeight = currentH;
+    if (viewportDebounceTimer) clearTimeout(viewportDebounceTimer);
+    viewportDebounceTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 200);
+  }
+}
+
 // ─── Init / Destroy ─────────────────────────────────────────────────────────
 
 export function initSmoothScroll(): Lenis | null {
@@ -100,11 +118,38 @@ export function initSmoothScroll(): Lenis | null {
   lenis.on('scroll', ScrollTrigger.update);
   window.addEventListener('scroll', ScrollTrigger.update, { passive: true });
 
+  // ── Sync ScrollTrigger when asynchronous web fonts (display=swap) finish rendering ──
+  if (typeof document !== 'undefined' && 'fonts' in document) {
+    document.fonts.ready.then(() => {
+      ScrollTrigger.refresh();
+    }).catch(() => {});
+  }
+
+  // ── Mobile dynamic address bar & orientation change listeners ──
+  if (typeof window !== 'undefined') {
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportChange, { passive: true });
+    }
+    window.addEventListener('orientationchange', handleViewportChange, { passive: true });
+  }
+
   return lenis;
 }
 
 export function destroySmoothScroll(): void {
   window.removeEventListener('scroll', ScrollTrigger.update);
+
+  if (viewportDebounceTimer) {
+    clearTimeout(viewportDebounceTimer);
+    viewportDebounceTimer = null;
+  }
+
+  if (typeof window !== 'undefined') {
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', handleViewportChange);
+    }
+    window.removeEventListener('orientationchange', handleViewportChange);
+  }
 
   if (tickerCallback) {
     gsap.ticker.remove(tickerCallback);
