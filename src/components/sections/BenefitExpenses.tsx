@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { usePrefersReducedMotion } from '../cinematic/InteractionLayer';
-
-gsap.registerPlugin(ScrollTrigger);
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { formatAmount } from '../../lib/formatters';
+import type { Language } from '../../types';
 
 interface BenefitExpensesProps {
-  language?: 'en' | 'mr' | 'hi';
+  language?: Language;
   className?: string;
   style?: React.CSSProperties;
   index?: number;
@@ -97,8 +97,6 @@ export function BenefitExpenses({
 
     return () => ctx.revert();
   }, [prefersReducedMotion]);
-
-  const formatAmount = (amount: number) => '₹' + amount.toLocaleString('en-IN');
 
   return (
     <section

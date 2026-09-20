@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { usePrefersReducedMotion } from '../cinematic/InteractionLayer';
-
-gsap.registerPlugin(ScrollTrigger);
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import type { Language } from '../../types';
 
 interface DigitalPavtiTransformProps {
-  language?: 'en' | 'mr' | 'hi';
+  language?: Language;
   className?: string;
   style?: React.CSSProperties;
 }

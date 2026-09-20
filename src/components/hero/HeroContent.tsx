@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { usePrefersReducedMotion } from '../cinematic/InteractionLayer';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import type { Language } from '../../types';
 
 export interface HeroContentProps {
   isVisible: boolean;
   onCtaClick?: () => void;
   className?: string;
   style?: React.CSSProperties;
-  language?: 'en' | 'mr' | 'hi';
+  language?: Language;
 }
 
 const CONTENT = {

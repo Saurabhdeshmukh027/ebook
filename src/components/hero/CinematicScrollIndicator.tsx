@@ -12,11 +12,12 @@
  */
 
 import { memo } from 'react';
-import { usePrefersReducedMotion } from '../cinematic/InteractionLayer';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import type { Language } from '../../types';
 
 export interface CinematicScrollIndicatorProps {
   isVisible: boolean;
-  language?: 'en' | 'mr' | 'hi';
+  language?: Language;
   className?: string;
   onClick?: () => void;
 }

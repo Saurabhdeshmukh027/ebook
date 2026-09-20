@@ -8,11 +8,10 @@ import { BenefitPayments } from './BenefitPayments';
 import { BenefitExpenses } from './BenefitExpenses';
 import { BenefitBalance } from './BenefitBalance';
 import { BenefitTransparency } from './BenefitTransparency';
-
-gsap.registerPlugin(ScrollTrigger);
+import type { Language } from '../../types';
 
 export interface MandalBenefitsProps {
-  language?: 'en' | 'mr' | 'hi';
+  language?: Language;
   className?: string;
   onComplete?: () => void;
 }

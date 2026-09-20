@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { usePrefersReducedMotion } from '../cinematic/InteractionLayer';
-
-gsap.registerPlugin(ScrollTrigger);
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { formatAmount } from '../../lib/formatters';
+import { MANDAL_FINANCES } from '../../data/mandalData';
+import type { Language } from '../../types';
 
 interface BenefitBalanceProps {
-  language?: 'en' | 'mr' | 'hi';
+  language?: Language;
   className?: string;
   style?: React.CSSProperties;
   index?: number;
@@ -42,9 +43,9 @@ export function BenefitBalance({
   const [animatedValues, setAnimatedValues] = useState({ collection: 0, expense: 0, balance: 0 });
   const content = CONTENT[language];
 
-  const finalCollection = 256850;
-  const finalExpense = 27200;
-  const finalBalance = finalCollection - finalExpense;
+  const finalCollection = MANDAL_FINANCES.finalCollection;
+  const finalExpense = MANDAL_FINANCES.finalExpense;
+  const finalBalance = MANDAL_FINANCES.finalBalance;
 
   useEffect(() => {
     if (!sectionRef.current || prefersReducedMotion) {
@@ -84,8 +85,6 @@ export function BenefitBalance({
 
     return () => ctx.revert();
   }, [prefersReducedMotion]);
-
-  const formatAmount = (amount: number) => '₹' + amount.toLocaleString('en-IN');
 
   return (
     <section

@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { scrollTo } from '../../lib/smoothScroll';
+import type { Language } from '../../types';
 
 interface NavigationProps {
   className?: string;
-  currentLanguage?: 'en' | 'mr' | 'hi';
-  onLanguageChange?: (lang: 'en' | 'mr' | 'hi') => void;
+  currentLanguage?: Language;
+  onLanguageChange?: (lang: Language) => void;
 }
 
 const NAV_LINKS = [

@@ -19,12 +19,13 @@ import { HeroContent } from './HeroContent';
 import { useHeroPointer } from './HeroPointer';
 import { CinematicScrollIndicator } from './CinematicScrollIndicator';
 import { VIDEO_SRC, POSTER_SRC } from '../../data/assets';
-import { usePrefersReducedMotion } from '../cinematic/InteractionLayer';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { scrollTo } from '../../lib/smoothScroll';
+import type { Language } from '../../types';
 
 export interface CinematicHeroProps {
   className?: string;
-  language?: 'en' | 'mr' | 'hi';
+  language?: Language;
 }
 
 export function CinematicHero({

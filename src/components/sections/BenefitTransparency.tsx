@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState, forwardRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { usePrefersReducedMotion } from '../cinematic/InteractionLayer';
-
-gsap.registerPlugin(ScrollTrigger);
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import type { Language } from '../../types';
 
 interface BenefitTransparencyProps {
-  language?: 'en' | 'mr' | 'hi';
+  language?: Language;
   className?: string;
   style?: React.CSSProperties;
   index?: number;
@@ -282,12 +281,7 @@ const BenefitTransparency = forwardRef<HTMLElement, BenefitTransparencyProps>(
 
 BenefitTransparency.displayName = 'BenefitTransparency';
 
-interface BenefitTransparencyProps {
-  language?: 'en' | 'mr' | 'hi';
-  className?: string;
-  style?: React.CSSProperties;
-  index?: number;
-}
+
 
 function TransparencyPillar({
   pillar,
@@ -302,7 +296,7 @@ function TransparencyPillar({
   isVisible: boolean;
   prefersReducedMotion: boolean;
   delay: number;
-  language: 'en' | 'mr' | 'hi';
+  language: Language;
 }) {
   return (
     <div

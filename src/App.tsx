@@ -6,15 +6,16 @@ import { ProductStory } from './components/sections/ProductStory';
 import { MandalBenefits } from './components/sections/MandalBenefits';
 import { PricingSection } from './components/sections/PricingSection';
 import { FinalCTA } from './components/sections/FinalCTA';
+import type { Language } from './types';
 
 function App() {
-  const [currentLanguage, setCurrentLanguage] = useState<'en' | 'mr' | 'hi'>('en');
+  const [currentLanguage, setCurrentLanguage] = useState<Language>('en');
 
   // Initialize global smooth scroll engine ONCE at app level
   // Lenis → GSAP ticker → ScrollTrigger — single coordinated RAF
   useSmoothScroll();
 
-  const handleLanguageChange = (lang: 'en' | 'mr' | 'hi') => {
+  const handleLanguageChange = (lang: Language) => {
     setCurrentLanguage(lang);
   };
 

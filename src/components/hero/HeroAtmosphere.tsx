@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { usePrefersReducedMotion } from '../cinematic/InteractionLayer';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 
 export interface HeroAtmosphereProps {
   intensity?: number;
