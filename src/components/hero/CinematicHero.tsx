@@ -18,10 +18,28 @@ import { HeroAtmosphere } from './HeroAtmosphere';
 import { HeroContent } from './HeroContent';
 import { useHeroPointer } from './HeroPointer';
 import { CinematicScrollIndicator } from './CinematicScrollIndicator';
+import { EpavtibookReveal } from './EpavtibookReveal';
 import { VIDEO_SRC, POSTER_SRC } from '../../data/assets';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { scrollTo } from '../../lib/smoothScroll';
 import type { Language } from '../../types';
+
+/**
+ * ── Cinematic E-PavtiBook Reveal Configuration ──
+ *
+ * All durations in milliseconds unless specified as video seconds.
+ *
+ * REVEAL_TRIGGER_TIME: Video currentTime (seconds) to trigger E-PavtiBook reveal.
+ *   (durga-v3.mp4 duration: ~10.0s; previous: ~7.8s; now 2–3s earlier: 5.0s).
+ *
+ * REVEAL_HOLD_DURATION_MS: Duration E-PavtiBook holds alone on screen (2500ms, spec: ~2.5s).
+ * REVEAL_EXIT_DURATION_MS: Duration of E-PavtiBook exit animation (600ms, spec: 500–700ms).
+ * BREATHING_GAP_MS: Duration of empty cinematic pause before HeroContent (400ms, spec: 300–500ms).
+ */
+export const REVEAL_TRIGGER_TIME = 5.0;
+export const REVEAL_HOLD_DURATION_MS = 2500;
+export const REVEAL_EXIT_DURATION_MS = 600;
+export const BREATHING_GAP_MS = 400;
 
 export interface CinematicHeroProps {
   className?: string;
@@ -42,9 +60,14 @@ export function CinematicHero({
 
   // ── State for gates ──
   const [isVideoReady, setIsVideoReady] = useState(false);
-  const [isContentVisible, setIsContentVisible] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
+  const [revealTriggered, setRevealTriggered] = useState(false);
+  const [isEpavtibookExited, setIsEpavtibookExited] = useState(false);
+  const [heroContentRevealed, setHeroContentRevealed] = useState(false);
+
+  // ── E-PavtiBook reveal: one-shot guard ──
+  const hasTriggeredRevealRef = useRef(false);
 
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -58,15 +81,28 @@ export function CinematicHero({
     containerSelector: '[data-cinematic-hero]',
   });
 
-  // ── Reveal hero content smoothly on mount without waiting for 6MB video stream ──
-  useEffect(() => {
-    const timer = setTimeout(() => setIsContentVisible(true), 80);
-    return () => clearTimeout(timer);
-  }, []);
-
   // ── Video loaded gate ──
   const handleVideoLoaded = useCallback(() => {
     setIsVideoReady(true);
+  }, []);
+
+  // ── Video time tracking for E-PavtiBook reveal (one-shot, synchronized to video playback) ──
+  const handleVideoTimeUpdate = useCallback((currentTime: number) => {
+    if (hasTriggeredRevealRef.current) return;
+
+    if (currentTime >= REVEAL_TRIGGER_TIME) {
+      hasTriggeredRevealRef.current = true;
+      setRevealTriggered(true);
+    }
+  }, []);
+
+  // ── E-PavtiBook exit complete → cinematic breathing gap → reveal hero content ──
+  const handleEpavtibookExitComplete = useCallback(() => {
+    setIsEpavtibookExited(true);
+    const timer = setTimeout(() => {
+      setHeroContentRevealed(true);
+    }, BREATHING_GAP_MS);
+    return () => clearTimeout(timer);
   }, []);
 
   // ── Scroll tracking for indicator dismissal ──
@@ -86,6 +122,15 @@ export function CinematicHero({
     if (prefersReducedMotion) {
       video.pause();
     }
+  }, [prefersReducedMotion]);
+
+  // ── Reduced motion: bypass choreography, show content immediately ──
+  useEffect(() => {
+    if (!prefersReducedMotion || hasTriggeredRevealRef.current) return;
+    hasTriggeredRevealRef.current = true;
+    setRevealTriggered(true);
+    setIsEpavtibookExited(true);
+    setHeroContentRevealed(true);
   }, [prefersReducedMotion]);
 
   // ── GSAP Ticker: Pointer Parallax + Elegant Scroll Parallax Exit ──
@@ -115,7 +160,7 @@ export function CinematicHero({
       }
 
       // ── Content wrapper: counter-parallax + smooth upward scroll fade ──
-      if (contentWrapperRef.current) {
+      if (contentWrapperRef.current && heroContentRevealed) {
         const contentTranslateX = -pointer.normalizedX * 10;
         const contentTranslateY = -pointer.normalizedY * 6 - scrollY * 0.35;
         const contentOpacity = Math.max(0, 1 - scrollY / 320);
@@ -197,6 +242,7 @@ export function CinematicHero({
             filter: videoError ? 'grayscale(0.3) brightness(0.7)' : 'none',
           }}
           onLoad={handleVideoLoaded}
+          onTimeUpdate={handleVideoTimeUpdate}
           onError={() => setVideoError(true)}
         />
       </div>
@@ -259,26 +305,49 @@ export function CinematicHero({
         />
       </div>
 
-      {/* Hero content — typography & CTAs */}
+      {/* E-PavtiBook cinematic reveal overlay (active only during reveal -> hold -> exit) */}
+      <EpavtibookReveal
+        isTriggered={revealTriggered}
+        isExitComplete={isEpavtibookExited}
+        language={language}
+        holdDurationMs={REVEAL_HOLD_DURATION_MS}
+        exitDurationMs={REVEAL_EXIT_DURATION_MS}
+        onExitComplete={handleEpavtibookExitComplete}
+      />
+
+      {/* Hero content — typography & CTAs (strictly hidden until E-PavtiBook exit + breathing gap) */}
       <div
-        ref={contentWrapperRef}
-        className="hero-content-wrapper"
+        className="hero-content-reveal-wrapper"
         style={{
           position: 'relative',
           zIndex: 40,
-          willChange: 'transform, opacity',
+          opacity: heroContentRevealed ? 1 : 0,
+          visibility: heroContentRevealed ? 'visible' : 'hidden',
+          transition: prefersReducedMotion
+            ? 'none'
+            : 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          pointerEvents: heroContentRevealed ? 'auto' : 'none',
         }}
+        aria-hidden={!heroContentRevealed}
       >
-        <HeroContent
-          isVisible={isContentVisible}
-          language={language}
-          onCtaClick={handleIndicatorClick}
-        />
+        <div
+          ref={contentWrapperRef}
+          className="hero-content-wrapper"
+          style={{
+            willChange: 'transform, opacity',
+          }}
+        >
+          <HeroContent
+            isVisible={heroContentRevealed}
+            language={language}
+            onCtaClick={handleIndicatorClick}
+          />
+        </div>
       </div>
 
       {/* Localized Scroll Indicator — gracefully fades on scroll, scrolls to #product on click */}
       <CinematicScrollIndicator
-        isVisible={isContentVisible && !isScrolledPastHero}
+        isVisible={heroContentRevealed && !isScrolledPastHero}
         language={language}
         onClick={handleIndicatorClick}
       />

@@ -1,4 +1,4 @@
-export const VIDEO_SRC = '/video/durga/durga-raudra.mp4';
+export const VIDEO_SRC = '/video/durga/durga-v3.mp4';
 export const POSTER_SRC = '/video/durga/durga-poster.jpg';
 
 export const ASSET_PATHS = {
