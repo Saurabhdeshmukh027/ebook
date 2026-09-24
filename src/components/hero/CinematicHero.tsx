@@ -204,25 +204,7 @@ export function CinematicHero({
       aria-label="Cinematic Durga Mata opening sequence"
       role="region"
     >
-      {/* Instant Base Poster Layer — Renders immediately at 0ms, preventing any black screen */}
-      <div
-        className="hero-poster-base"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 4,
-          backgroundImage: `url(${POSTER_SRC})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 35%',
-          backgroundRepeat: 'no-repeat',
-          transform: 'scale(1.12)',
-          transformOrigin: '50% 40%',
-          willChange: prefersReducedMotion ? 'auto' : 'transform',
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Video Layer — Continuous playback crossfading smoothly over the poster */}
+      {/* Video Layer — Continuous cinematic video playback */}
       <div
         ref={videoLayerRef}
         className="hero-video-wrapper"
@@ -384,17 +366,7 @@ export function CinematicHero({
           object-position: center 35%;
           object-fit: cover;
         }
-        @keyframes hero-ambient-breathe {
-          0%, 100% {
-            transform: scale(1.12) translate3d(0, 0, 0);
-          }
-          50% {
-            transform: scale(1.145) translate3d(0, -3px, 0);
-          }
-        }
-        .hero-poster-base {
-          animation: hero-ambient-breathe 14s ease-in-out infinite;
-        }
+
         @media (max-width: 768px) {
           .cinematic-hero {
             height: 100dvh;
@@ -413,8 +385,7 @@ export function CinematicHero({
           .hero-video,
           .hero-atmosphere,
           .hero-content-wrapper,
-          .hero-video-wrapper,
-          .hero-poster-base {
+          .hero-video-wrapper {
             transition: none !important;
             animation: none !important;
             transform: none !important;
