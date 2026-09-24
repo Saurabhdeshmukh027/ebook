@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, forwardRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { t } from '../../data/translations';
 import type { Language } from '../../types';
 
 interface BenefitTransparencyProps {
@@ -242,7 +243,7 @@ const BenefitTransparency = forwardRef<HTMLElement, BenefitTransparencyProps>(
               </p>
             </div>
 
-            <UnifiedRecord />
+            <UnifiedRecord language={language} />
           </div>
         </div>
 
@@ -344,7 +345,8 @@ function TransparencyPillar({
   );
 }
 
-function UnifiedRecord() {
+function UnifiedRecord({ language = 'en' }: { language?: Language }) {
+  const common = t(language);
   return (
     <div
       className="unified-record"
@@ -357,12 +359,12 @@ function UnifiedRecord() {
         padding: '1px',
       }}
       role="img"
-      aria-label="Unified E-PavtiBook record showing all four components"
+      aria-label={common.unifiedRecordAriaLabel}
     >
-      <UnifiedCell label="PAVTI" value="EP-2026-001247" icon="pavti" color="sindoor" />
-      <UnifiedCell label="COLLECTION" value="₹2,56,850" icon="collection" color="brass" />
-      <UnifiedCell label="EXPENSE" value="₹27,200" icon="expense" color="sindoor" />
-      <UnifiedCell label="BALANCE" value="₹2,29,650" icon="balance" color="marigold" />
+      <UnifiedCell label={common.pavti} value="EP-2026-001247" icon="pavti" color="sindoor" />
+      <UnifiedCell label={common.collection} value="₹2,56,850" icon="collection" color="brass" />
+      <UnifiedCell label={common.expense} value="₹27,200" icon="expense" color="sindoor" />
+      <UnifiedCell label={common.balance} value="₹2,29,650" icon="balance" color="marigold" />
     </div>
   );
 }

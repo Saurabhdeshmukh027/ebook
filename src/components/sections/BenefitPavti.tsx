@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { t } from '../../data/translations';
 import type { Language } from '../../types';
 
 interface BenefitPavtiProps {
@@ -40,6 +41,7 @@ export function BenefitPavti({
   const pavtiRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const content = CONTENT[language];
+  const common = t(language);
 
   useEffect(() => {
     if (!sectionRef.current || prefersReducedMotion) {
@@ -175,7 +177,7 @@ export function BenefitPavti({
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(201, 162, 39, 0.2)', paddingBottom: '1rem' }}>
                 <div>
-                  <p style={{ fontFamily: 'var(--font-heading)', fontSize: '1.125rem', fontWeight: 500, color: 'var(--color-ink)' }}>डिजिटल पावती</p>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontSize: '1.125rem', fontWeight: 500, color: 'var(--color-ink)' }}>{common.digitalPavti}</p>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', color: 'var(--color-ink-soft)' }}>E-PavtiBook · Navratri 2026</p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
@@ -185,15 +187,15 @@ export function BenefitPavti({
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <PavtiField label="Donor" value="Ramesh Patil" />
-                <PavtiField label="Amount" value="₹ 5,000" />
-                <PavtiField label="Purpose" value="Vargani" />
-                <PavtiField label="Mode" value="UPI" />
+                <PavtiField label={common.donor} value="Ramesh Patil" />
+                <PavtiField label={common.amount} value="₹ 5,000" />
+                <PavtiField label={common.purpose} value="Vargani" />
+                <PavtiField label={common.mode} value="UPI" />
               </div>
 
               <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                <button style={{ flex: 1, padding: '0.75rem', background: 'var(--color-sindoor)', color: 'var(--color-paper)', border: 'none', borderRadius: '6px', fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>Share</button>
-                <button style={{ flex: 1, padding: '0.75rem', background: 'transparent', color: 'var(--color-ink)', border: '1px solid rgba(201, 162, 39, 0.3)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, cursor: 'pointer' }}>Download</button>
+                <button style={{ flex: 1, padding: '0.75rem', background: 'var(--color-sindoor)', color: 'var(--color-paper)', border: 'none', borderRadius: '6px', fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>{common.share}</button>
+                <button style={{ flex: 1, padding: '0.75rem', background: 'transparent', color: 'var(--color-ink)', border: '1px solid rgba(201, 162, 39, 0.3)', borderRadius: '6px', fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, cursor: 'pointer' }}>{common.download}</button>
               </div>
 
               <div style={{ position: 'absolute', top: '1rem', right: '1rem', width: '28px', height: '28px', background: 'var(--color-sindoor)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="QR code">

@@ -71,8 +71,8 @@ export function CinematicHero({
 
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  // ── Pointer parallax (mouse tracking on desktop) ──
-  const { positionRef: pointerRef } = useHeroPointer({
+  // ── Pointer parallax (mouse tracking on desktop, touch tracking on mobile) ──
+  const { positionRef: pointerRef, isTouchRef } = useHeroPointer({
     enabled: !prefersReducedMotion,
     reduceMotion: prefersReducedMotion,
     sensitivity: 1,
@@ -141,28 +141,44 @@ export function CinematicHero({
       const pointer = pointerRef.current;
       const scrollY = window.scrollY;
 
-      // ── Video Layer: Subtle mouse parallax + 0.25x scroll parallax exit ──
+      // Detect mobile touch or viewport
+      const isMobile =
+        isTouchRef.current ||
+        (typeof window !== 'undefined' &&
+          (window.innerWidth <= 768 || window.matchMedia('(pointer: coarse)').matches));
+
+      // Parallax ranges:
+      // Desktop: Video ±16px X, ±10px Y; Atmosphere ±24px X, ±15px Y; Content ±10px X, ±6px Y
+      // Mobile: Video ±8px X, ±6px Y; Atmosphere ±12px X, ±8px Y; Content ±5px X, ±3px Y
+      const videoMultiplierX = isMobile ? 8 : 16;
+      const videoMultiplierY = isMobile ? 6 : 10;
+      const atmMultiplierX = isMobile ? 12 : 24;
+      const atmMultiplierY = isMobile ? 8 : 15;
+      const contentMultiplierX = isMobile ? 5 : 10;
+      const contentMultiplierY = isMobile ? 3 : 6;
+
+      // ── Video Layer: Subtle parallax + 0.25x scroll parallax exit ──
       if (videoLayerRef.current) {
-        const videoTranslateX = pointer.normalizedX * 16;
-        const videoTranslateY = pointer.normalizedY * 10 + scrollY * 0.25;
-        const scale = 1.12 + Math.abs(pointer.normalizedX) * 0.01;
+        const videoTranslateX = pointer.normalizedX * videoMultiplierX;
+        const videoTranslateY = pointer.normalizedY * videoMultiplierY + scrollY * 0.25;
+        const scale = 1.12 + Math.abs(pointer.normalizedX) * (isMobile ? 0.005 : 0.01);
 
         videoLayerRef.current.style.transform =
           `translate3d(${videoTranslateX}px, ${videoTranslateY}px, 0) scale(${scale})`;
       }
 
-      // ── Atmosphere wrapper: slightly deeper mouse parallax ──
+      // ── Atmosphere wrapper: slightly deeper parallax ──
       if (atmosphereWrapperRef.current) {
-        const atmTranslateX = pointer.normalizedX * 24;
-        const atmTranslateY = pointer.normalizedY * 15 + scrollY * 0.15;
+        const atmTranslateX = pointer.normalizedX * atmMultiplierX;
+        const atmTranslateY = pointer.normalizedY * atmMultiplierY + scrollY * 0.15;
         atmosphereWrapperRef.current.style.transform =
           `translate3d(${atmTranslateX}px, ${atmTranslateY}px, 0)`;
       }
 
       // ── Content wrapper: counter-parallax + smooth upward scroll fade ──
       if (contentWrapperRef.current && heroContentRevealed) {
-        const contentTranslateX = -pointer.normalizedX * 10;
-        const contentTranslateY = -pointer.normalizedY * 6 - scrollY * 0.35;
+        const contentTranslateX = -pointer.normalizedX * contentMultiplierX;
+        const contentTranslateY = -pointer.normalizedY * contentMultiplierY - scrollY * 0.35;
         const contentOpacity = Math.max(0, 1 - scrollY / 320);
 
         contentWrapperRef.current.style.transform =
@@ -173,7 +189,7 @@ export function CinematicHero({
 
     gsap.ticker.add(tickerFn);
     return () => gsap.ticker.remove(tickerFn);
-  }, [prefersReducedMotion, pointerRef]);
+  }, [prefersReducedMotion, pointerRef, isTouchRef, heroContentRevealed]);
 
   const handleIndicatorClick = useCallback(() => {
     scrollTo('#product');

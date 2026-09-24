@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { scrollTo } from '../../lib/smoothScroll';
+import { t } from '../../data/translations';
 import type { Language } from '../../types';
 
 interface NavigationProps {
@@ -135,6 +136,21 @@ export function Navigation({ className = '', currentLanguage = 'en', onLanguageC
             {link.label[currentLanguage]}
           </a>
         ))}
+        {/* Mobile-only language selector inside hamburger menu */}
+        <div className="mobile-language-selector" style={{ display: 'none' }}>
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              className={lang.code === currentLanguage ? 'active' : ''}
+              onClick={() => {
+                onLanguageChange?.(lang.code);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              {lang.native}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -263,7 +279,7 @@ export function Navigation({ className = '', currentLanguage = 'en', onLanguageC
           onMouseDown={(e) => { e.currentTarget.style.transform = 'scale(0.98)'; }}
           onMouseUp={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
         >
-          Get Started
+          {t(currentLanguage).getStarted}
         </a>
 
         <button
@@ -279,7 +295,7 @@ export function Navigation({ className = '', currentLanguage = 'en', onLanguageC
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-menu"
-          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={isMobileMenuOpen ? t(currentLanguage).closeMenu : t(currentLanguage).openMenu}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             {isMobileMenuOpen ? (
@@ -333,6 +349,32 @@ export function Navigation({ className = '', currentLanguage = 'en', onLanguageC
           }
           .nav-language {
             display: none;
+          }
+          .mobile-language-selector {
+            display: flex !important;
+            flex-direction: row;
+            gap: 0.5rem;
+            justify-content: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(247, 239, 221, 0.1);
+          }
+          .mobile-language-selector button {
+            padding: 0.5rem 1rem;
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 4px;
+            border: 1px solid rgba(247, 239, 221, 0.2);
+            background: transparent;
+            color: rgba(247, 239, 221, 0.8);
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+          }
+          .mobile-language-selector button.active {
+            background: rgba(232, 149, 30, 0.15);
+            color: var(--color-marigold);
+            border-color: var(--color-marigold);
+            font-weight: 600;
           }
           .nav-links .nav-cta {
             width: 100%;

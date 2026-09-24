@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { t } from '../../data/translations';
 import type { Language } from '../../types';
 
 interface BenefitPaymentsProps {
@@ -43,6 +44,7 @@ export function BenefitPayments({
   const [isVisible, setIsVisible] = useState(false);
   const [animationPhase, setAnimationPhase] = useState(0);
   const content = CONTENT[language];
+  const common = t(language);
 
   useEffect(() => {
     if (!sectionRef.current || prefersReducedMotion) {
@@ -298,17 +300,15 @@ export function BenefitPayments({
                 }}
               >
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-brass)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                  Gold
+                  {common.gold}
                 </p>
                 <p style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 500, color: 'var(--color-ink)', marginBottom: '0.25rem' }}>
                   ₹799
                 </p>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', color: 'var(--color-ink-soft)', marginBottom: '1rem' }}>
-                  /season
+                  {common.perSeason}
                 </p>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', fontWeight: 400, color: 'var(--color-ink-soft)', lineHeight: 1.5 }}>
-                  Digital Pavti + Collection + Expenses + Balance + <strong>Online Payments</strong>
-                </p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', fontWeight: 400, color: 'var(--color-ink-soft)', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: common.goldFeatures }} />
               </div>
               <div
                 className="plan-card"
@@ -323,17 +323,15 @@ export function BenefitPayments({
                 }}
               >
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(247, 239, 221, 0.9)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                  Platinum
+                  {common.platinum}
                 </p>
                 <p style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 500, color: 'var(--color-paper)', marginBottom: '0.25rem' }}>
                   ₹2,100
                 </p>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', color: 'rgba(247, 239, 221, 0.9)', marginBottom: '1rem' }}>
-                  /season
+                  {common.perSeason}
                 </p>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', fontWeight: 400, color: 'rgba(247, 239, 221, 0.9)', lineHeight: 1.5 }}>
-                  Gold + <strong>Multi-device sync</strong> + <strong>Priority support</strong>
-                </p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', fontWeight: 400, color: 'rgba(247, 239, 221, 0.9)', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: common.platinumFeatures }} />
               </div>
             </div>
           </div>

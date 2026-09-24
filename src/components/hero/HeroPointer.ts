@@ -33,6 +33,7 @@ export interface HeroPointerOptions {
 export interface HeroPointerReturn {
   positionRef: React.RefObject<PointerPosition>;
   isInsideRef: React.RefObject<boolean>;
+  isTouchRef: React.RefObject<boolean>;
 }
 
 const ZERO_POSITION: PointerPosition = { x: 0, y: 0, normalizedX: 0, normalizedY: 0 };
@@ -49,6 +50,8 @@ export function useHeroPointer(options: HeroPointerOptions = {}): HeroPointerRet
 
   const positionRef = useRef<PointerPosition>({ ...ZERO_POSITION });
   const isInsideRef = useRef(false);
+  const isTouchRef = useRef(false);
+  const isTouchTrackingRef = useRef(false);
   const targetRef = useRef<PointerPosition>({ ...ZERO_POSITION });
   const tickerFnRef = useRef<((time: number) => void) | null>(null);
 
@@ -56,6 +59,7 @@ export function useHeroPointer(options: HeroPointerOptions = {}): HeroPointerRet
     if (!enabled || reduceMotion) {
       positionRef.current = { ...ZERO_POSITION };
       isInsideRef.current = false;
+      isTouchRef.current = false;
       return;
     }
 
@@ -67,10 +71,14 @@ export function useHeroPointer(options: HeroPointerOptions = {}): HeroPointerRet
     const element = document.querySelector(containerSelector) as HTMLElement;
     if (!element) return;
 
-    const handleMove = (e: MouseEvent) => {
+    // Helper to calculate normalized coordinates relative to hero bounding rect:
+    // center = 0, left = negative X, right = positive X, top = negative Y, bottom = positive Y
+    const updateTargetFromClientCoords = (clientX: number, clientY: number) => {
       const rect = element.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
       const normalizedX = ((x / rect.width) * 2 - 1) * sensitivity;
       const normalizedY = ((y / rect.height) * 2 - 1) * sensitivity;
 
@@ -82,16 +90,56 @@ export function useHeroPointer(options: HeroPointerOptions = {}): HeroPointerRet
       };
     };
 
-    const handleEnter = () => { isInsideRef.current = true; };
-    const handleLeave = () => {
+    // ── Mouse handlers (desktop) ──
+    const handleMouseMove = (e: MouseEvent) => {
+      isTouchRef.current = false;
+      updateTargetFromClientCoords(e.clientX, e.clientY);
+    };
+
+    const handleMouseEnter = () => {
+      isInsideRef.current = true;
+    };
+
+    const handleMouseLeave = () => {
       isInsideRef.current = false;
       // Ease back to center
       targetRef.current = { ...ZERO_POSITION };
     };
 
-    element.addEventListener('mousemove', handleMove, { passive: true });
-    element.addEventListener('mouseenter', handleEnter);
-    element.addEventListener('mouseleave', handleLeave);
+    // ── Touch handlers (mobile — passive, non-blocking for natural scrolling) ──
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 0) return;
+      isTouchRef.current = true;
+      isTouchTrackingRef.current = true;
+      isInsideRef.current = true;
+      const touch = e.touches[0];
+      updateTargetFromClientCoords(touch.clientX, touch.clientY);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isTouchTrackingRef.current || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      updateTargetFromClientCoords(touch.clientX, touch.clientY);
+    };
+
+    const handleTouchEnd = () => {
+      if (!isTouchTrackingRef.current) return;
+      isTouchTrackingRef.current = false;
+      isInsideRef.current = false;
+      // Ease back to center gradually via GSAP ticker damping (breathing return)
+      targetRef.current = { ...ZERO_POSITION };
+    };
+
+    // Desktop mouse events on element
+    element.addEventListener('mousemove', handleMouseMove, { passive: true });
+    element.addEventListener('mouseenter', handleMouseEnter);
+    element.addEventListener('mouseleave', handleMouseLeave);
+
+    // Mobile touch events: start on element, move/end on window for robust tracking during swipe
+    element.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
 
     // ── GSAP ticker callback — smooth interpolation on the single clock ──
     const tickerFn = () => {
@@ -115,9 +163,14 @@ export function useHeroPointer(options: HeroPointerOptions = {}): HeroPointerRet
     gsap.ticker.add(tickerFn);
 
     return () => {
-      element.removeEventListener('mousemove', handleMove);
-      element.removeEventListener('mouseenter', handleEnter);
-      element.removeEventListener('mouseleave', handleLeave);
+      element.removeEventListener('mousemove', handleMouseMove);
+      element.removeEventListener('mouseenter', handleMouseEnter);
+      element.removeEventListener('mouseleave', handleMouseLeave);
+      element.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchEnd);
+
       if (tickerFnRef.current) {
         gsap.ticker.remove(tickerFnRef.current);
         tickerFnRef.current = null;
@@ -125,5 +178,5 @@ export function useHeroPointer(options: HeroPointerOptions = {}): HeroPointerRet
     };
   }, [enabled, reduceMotion, sensitivity, damping, maxOffset, containerSelector]);
 
-  return { positionRef, isInsideRef };
+  return { positionRef, isInsideRef, isTouchRef };
 }

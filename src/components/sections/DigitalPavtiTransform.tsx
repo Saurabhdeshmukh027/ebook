@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { t } from '../../data/translations';
 import type { Language } from '../../types';
 
 interface DigitalPavtiTransformProps {
@@ -192,6 +193,7 @@ export function DigitalPavtiTransform({
               <TransformPavti
                 variant="paper"
                 intensity={1 - transformProgress}
+                language={language}
               />
             </div>
           </div>
@@ -220,6 +222,7 @@ export function DigitalPavtiTransform({
               <TransformPavti
                 variant="digital"
                 intensity={transformProgress}
+                language={language}
               />
             </div>
           </div>
@@ -289,9 +292,9 @@ export function DigitalPavtiTransform({
               color: 'var(--color-ink-soft)',
             }}
           >
-            {transformProgress < 0.3 && content.eyebrow === 'THE TRANSFORMATION' && 'Traditional paper pavti — tactile, trusted, familiar'}
-            {transformProgress >= 0.3 && transformProgress < 0.7 && 'Light passes through — information reorganizes'}
-            {transformProgress >= 0.7 && 'E-PavtiBook digital pavti — same trust, transparent record'}
+            {transformProgress < 0.3 && t(language).captionPaper}
+            {transformProgress >= 0.3 && transformProgress < 0.7 && t(language).captionTransition}
+            {transformProgress >= 0.7 && t(language).captionDigital}
           </p>
         </div>
       </div>
@@ -339,8 +342,10 @@ export function DigitalPavtiTransform({
 function TransformPavti({
   variant,
   intensity,
-}: { variant: 'paper' | 'digital'; intensity: number }) {
+  language = 'en',
+}: { variant: 'paper' | 'digital'; intensity: number; language?: Language }) {
   const isPaper = variant === 'paper';
+  const common = t(language);
 
   return (
     <div
@@ -374,7 +379,7 @@ function TransformPavti({
         position: 'relative',
         overflow: 'hidden',
       }}
-      aria-label={isPaper ? 'Traditional paper pavti' : 'E-PavtiBook digital pavti'}
+      aria-label={isPaper ? common.captionPaper : common.captionDigital}
       role="img"
     >
       {isPaper && (
@@ -415,7 +420,7 @@ function TransformPavti({
       >
         <div>
           <p style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 500, color: isPaper ? 'var(--color-ink)' : 'var(--color-ink)' }}>
-            {isPaper ? 'पावती' : 'डिजिटल पावती'}
+            {isPaper ? 'पावती' : common.digitalPavti}
           </p>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 400, color: isPaper ? 'var(--color-ink-soft)' : 'var(--color-ink-soft)', marginTop: '0.25rem' }}>
             {isPaper ? 'श्री देवी मंडळ, नवरत्रि २०२६' : 'E-PavtiBook · Navratri 2026'}
@@ -440,10 +445,10 @@ function TransformPavti({
           zIndex: 1,
         }}
       >
-        <PavtiField label={isPaper ? 'नाम' : 'Donor'} value={isPaper ? 'श्री रमेश पाटील' : 'Ramesh Patil'} />
-        <PavtiField label={isPaper ? 'रक्कम' : 'Amount'} value={isPaper ? '₹ ५,०००' : '₹ 5,000'} />
-        <PavtiField label={isPaper ? 'उद्देश' : 'Purpose'} value={isPaper ? 'वर्गणी' : 'Vargani'} />
-        <PavtiField label={isPaper ? 'पद्धत' : 'Mode'} value={isPaper ? 'यूपीआय' : 'UPI'} />
+        <PavtiField label={isPaper ? 'नाम' : common.donor} value={isPaper ? 'श्री रमेश पाटील' : 'Ramesh Patil'} />
+        <PavtiField label={isPaper ? 'रक्कम' : common.amount} value={isPaper ? '₹ ५,०००' : '₹ 5,000'} />
+        <PavtiField label={isPaper ? 'उद्देश' : common.purpose} value={isPaper ? 'वर्गणी' : 'Vargani'} />
+        <PavtiField label={isPaper ? 'पद्धत' : common.mode} value={isPaper ? 'यूपीआय' : 'UPI'} />
       </div>
 
       {isPaper ? (
@@ -492,9 +497,9 @@ function TransformPavti({
               cursor: 'pointer',
             }}
             disabled
-            aria-label="Share digital pavti"
+            aria-label={common.sharePavtiAriaLabel}
           >
-            शेअर करा
+            {common.share}
           </button>
           <button
             style={{
@@ -510,9 +515,9 @@ function TransformPavti({
               cursor: 'pointer',
             }}
             disabled
-            aria-label="Download PDF"
+            aria-label={common.downloadPdfAriaLabel}
           >
-            डाउनलोड
+            {common.download}
           </button>
         </div>
       )}
@@ -528,8 +533,8 @@ function TransformPavti({
           zIndex: 1,
         }}
       >
-        <span>{isPaper ? 'मूल प्रति: देणीदार' : 'Donor copy'}</span>
-        <span>{isPaper ? 'प्रतिलिपी: मंडळ' : 'Mandal copy'}</span>
+        <span>{isPaper ? 'मूल प्रति: देणीदार' : common.donorCopy}</span>
+        <span>{isPaper ? 'प्रतिलिपी: मंडळ' : common.mandalCopy}</span>
       </div>
 
       {!isPaper && intensity > 0.5 && (

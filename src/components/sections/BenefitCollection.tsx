@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { t } from '../../data/translations';
 import type { Language } from '../../types';
 
 interface BenefitCollectionProps {
@@ -62,6 +63,7 @@ export function BenefitCollection({
   const [activeStep, setActiveStep] = useState(-1);
   const content = CONTENT[language];
   const steps = FLOW_STEPS[language];
+  const common = t(language);
 
   useEffect(() => {
     if (!sectionRef.current || prefersReducedMotion) {
@@ -280,13 +282,13 @@ export function BenefitCollection({
               }}
             >
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, color: 'var(--color-brass)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                {content.eyebrow === '02 — VARGANI / COLLECTION' ? 'COLLECTION TOTAL' : 'संग्रह एकूण'}
+                {common.collectionTotal}
               </p>
               <p style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 500, color: 'var(--color-ink)' }}>
                 ₹2,56,850
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', color: 'var(--color-ink-soft)', marginTop: '0.5rem' }}>
-                Sample data — illustrative only
+                {common.sampleDataNote}
               </p>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { formatAmount } from '../../lib/formatters';
 import { MANDAL_FINANCES } from '../../data/mandalData';
+import { t } from '../../data/translations';
 import type { Language } from '../../types';
 
 interface BenefitBalanceProps {
@@ -42,6 +43,7 @@ export function BenefitBalance({
   const [isVisible, setIsVisible] = useState(false);
   const [animatedValues, setAnimatedValues] = useState({ collection: 0, expense: 0, balance: 0 });
   const content = CONTENT[language];
+  const common = t(language);
 
   const finalCollection = MANDAL_FINANCES.finalCollection;
   const finalExpense = MANDAL_FINANCES.finalExpense;
@@ -166,7 +168,7 @@ export function BenefitBalance({
           }}
         >
           <BalanceCard
-            label="COLLECTION"
+            label={common.collection}
             amount={animatedValues.collection}
             formatAmount={formatAmount}
             isVisible={isVisible}
@@ -198,7 +200,7 @@ export function BenefitBalance({
           </div>
 
           <BalanceCard
-            label="EXPENSES"
+            label={common.expenses}
             amount={animatedValues.expense}
             formatAmount={formatAmount}
             isVisible={isVisible}
@@ -231,7 +233,7 @@ export function BenefitBalance({
           </div>
 
           <BalanceCard
-            label="BALANCE"
+            label={common.balance}
             amount={animatedValues.balance}
             formatAmount={formatAmount}
             isVisible={isVisible}
@@ -255,7 +257,7 @@ export function BenefitBalance({
             }}
           >
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.9375rem', fontWeight: 400, lineHeight: 1.6, color: 'var(--color-ink-soft)' }}>
-              Every rupee accounted for. Every donor can verify. Every committee member can trust.
+              {common.balanceNote}
             </p>
           </div>
         </div>

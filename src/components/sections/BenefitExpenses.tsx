@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { formatAmount } from '../../lib/formatters';
+import { t } from '../../data/translations';
 import type { Language } from '../../types';
 
 interface BenefitExpensesProps {
@@ -67,6 +68,7 @@ export function BenefitExpenses({
   const [totalExpense, setTotalExpense] = useState(0);
   const content = CONTENT[language];
   const expenses = EXPENSES[language];
+  const common = t(language);
 
   useEffect(() => {
     if (!sectionRef.current || prefersReducedMotion) {
@@ -226,7 +228,7 @@ export function BenefitExpenses({
                       {expense.label}
                     </p>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', fontWeight: 400, color: 'var(--color-ink-soft)' }}>
-                      Recorded in E-PavtiBook
+                      {common.recordedInEpavtibook}
                     </p>
                   </div>
                   <p style={{ fontFamily: 'var(--font-heading)', fontSize: '1.125rem', fontWeight: 500, color: 'var(--color-sindoor)' }}>
@@ -253,7 +255,7 @@ export function BenefitExpenses({
               }}
             >
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', fontWeight: 600, color: 'var(--color-ink)' }}>
-                TOTAL EXPENSE
+                {common.totalExpense}
               </p>
               <p style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 500, color: 'var(--color-sindoor)' }}>
                 {formatAmount(totalExpense)}
@@ -261,7 +263,7 @@ export function BenefitExpenses({
             </div>
 
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', color: 'var(--color-ink-soft)', textAlign: 'center', marginTop: '0.75rem' }}>
-              Sample data — illustrative only
+              {common.sampleDataNote}
             </p>
           </div>
         </div>

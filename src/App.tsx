@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSmoothScroll } from './lib/smoothScroll';
 import { Navigation } from './components/navigation/Navigation';
 import { CinematicHero } from './components/hero/CinematicHero';
@@ -6,10 +6,22 @@ import { ProductStory } from './components/sections/ProductStory';
 import { MandalBenefits } from './components/sections/MandalBenefits';
 import { PricingSection } from './components/sections/PricingSection';
 import { FinalCTA } from './components/sections/FinalCTA';
+import { t } from './data/translations';
 import type { Language } from './types';
 
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState<Language>('en');
+
+  // Sync document title and <html lang> attribute with selected language
+  useEffect(() => {
+    const translations = t(currentLanguage);
+    document.title = translations.pageTitle;
+    document.documentElement.lang = currentLanguage;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', translations.metaDescription);
+    }
+  }, [currentLanguage]);
 
   // Initialize global smooth scroll engine ONCE at app level
   // Lenis → GSAP ticker → ScrollTrigger — single coordinated RAF
