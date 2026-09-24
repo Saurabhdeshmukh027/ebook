@@ -304,7 +304,7 @@ function PaperPavti({
             पावती
           </p>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 400, color: 'var(--color-ink-soft)', marginTop: '0.25rem' }}>
-            श्री देवी मंडळ, नवरत्रि २०२६
+            श्री देवी मंडळ, नवरात्रि २०२६
           </p>
         </div>
         <div style={{ textAlign: 'right' }}>

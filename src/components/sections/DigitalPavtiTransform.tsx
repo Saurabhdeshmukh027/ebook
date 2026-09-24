@@ -423,7 +423,7 @@ function TransformPavti({
             {isPaper ? 'पावती' : common.digitalPavti}
           </p>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 400, color: isPaper ? 'var(--color-ink-soft)' : 'var(--color-ink-soft)', marginTop: '0.25rem' }}>
-            {isPaper ? 'श्री देवी मंडळ, नवरत्रि २०२६' : 'E-PavtiBook · Navratri 2026'}
+            {isPaper ? 'श्री देवी मंडळ, नवरात्रि २०२६' : 'E-PavtiBook · Navratri 2026'}
           </p>
         </div>
         <div style={{ textAlign: 'right' }}>

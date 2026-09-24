@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { StatementSection } from './StatementSection';
 import { ProblemSection } from './ProblemSection';
-import { DigitalPavtiTransform } from './DigitalPavtiTransform';
+import { PavtiWorkflow } from './PavtiWorkflow';
 import type { Language } from '../../types';
 
 export interface ProductStoryProps {
@@ -41,7 +41,7 @@ export function ProductStory({ language = 'en', className = '', onComplete }: Pr
       <StatementSection language={language} />
       <ProblemSection language={language} />
       <div ref={storyEndRef}>
-        <DigitalPavtiTransform language={language} />
+        <PavtiWorkflow language={language} />
       </div>
     </section>
   );
