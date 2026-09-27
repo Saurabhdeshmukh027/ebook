@@ -13,6 +13,12 @@ interface PricingPlanProps {
 
 type PlanTier = 'silver' | 'gold' | 'platinum';
 
+const PLAN_LINKS: Record<PlanTier, string> = {
+  silver: 'https://our.epavtibook.com/register?plan=basic',
+  gold: 'https://our.epavtibook.com/register?plan=standard',
+  platinum: 'https://our.epavtibook.com/register?plan=premium',
+};
+
 const PLANS = {
   en: {
     silver: {
@@ -20,11 +26,12 @@ const PLANS = {
       price: '499',
       period: '/ season',
       features: [
-        '100 digital pavtis',
-        'Expense log & balance tracking',
-        'Vargani & interest collection management',
+        'Unlimited digital pavtis',
+        'Up to 5 collectors',
+        '1 active festival or drive',
+        'PDF download & print',
       ],
-      cta: 'Choose Silver',
+      cta: 'Get Started',
     },
     gold: {
       name: 'Gold',
@@ -32,26 +39,31 @@ const PLANS = {
       period: '/ season',
       features: [
         'Unlimited digital pavtis',
-        '4 receipt templates',
-        'Personalized receipts with blessings',
-        'Online payments direct to cashier\'s account',
+        'Up to 10 collectors',
+        'Run 2 festivals at once',
+        'Your branding on every pavti',
+        'Dynamic UPI QR for instant collection',
+        'Shareable payment link for unpaid pavtis',
+        'Cinematic 4-slide pavti experience',
+        'PDF download & print',
       ],
-      cta: 'Choose Gold',
+      cta: 'Get Started',
     },
     platinum: {
       name: 'Platinum',
-      price: '2,100',
+      price: '1,999',
       period: '/ season',
       features: [
         'Unlimited digital pavtis',
-        '4 receipt templates',
-        'Online payments direct to cashier\'s account',
-        'Customized mandal webpage with:',
-        '  Mandal history',
-        '  Bhandara invitations',
-        '  Daily dress code',
+        'Unlimited collectors',
+        'Run up to 5 festivals at once',
+        'Your branding on every pavti',
+        'Dynamic UPI QR for instant collection',
+        'Shareable payment link for unpaid pavtis',
+        'Cinematic 4-slide pavti experience',
+        'Full activity log',
       ],
-      cta: 'Choose Platinum',
+      cta: 'Get Started',
     },
   },
   mr: {
@@ -60,11 +72,12 @@ const PLANS = {
       price: '499',
       period: '/ हंगाम',
       features: [
-        '१०० डिजिटल पावती',
-        'खर्च लॉग आणि शिल्लक तपशील',
-        'वर्गणी आणि व्याज संकलन व्यवस्थापन',
+        'अमर्याद डिजिटल पावती',
+        '५ पर्यंत संग्राहक',
+        '१ सक्रिय उत्सव किंवा मोहीम',
+        'PDF डाउनलोड आणि प्रिंट',
       ],
-      cta: 'सिल्वर निवडा',
+      cta: 'सुरू करा',
     },
     gold: {
       name: 'गोल्ड',
@@ -72,26 +85,31 @@ const PLANS = {
       period: '/ हंगाम',
       features: [
         'अमर्याद डिजिटल पावती',
-        '४ रसीद टेम्पलेट्स',
-        'आशीर्वादासह वैयक्तिक रसीद',
-        'कॅशियरच्या खातेत ऑनलाइन पेमेंट',
+        '१० पर्यंत संग्राहक',
+        'एकाच वेळी २ उत्सव चालवा',
+        'प्रत्येक पावतीवर तुमचे ब्रँडिंग',
+        'त्वरित वर्गणीसाठी डायनॅमिक UPI QR',
+        'थकीत पावतीसाठी शेअर करण्यायोग्य पेमेंट लिंक',
+        'सिनेमॅटिक ४-स्लाइड पावती अनुभव',
+        'PDF डाउनलोड आणि प्रिंट',
       ],
-      cta: 'गोल्ड निवडा',
+      cta: 'सुरू करा',
     },
     platinum: {
       name: 'प्लॅटिनम',
-      price: '2,100',
+      price: '1,999',
       period: '/ हंगाम',
       features: [
         'अमर्याद डिजिटल पावती',
-        '४ रसीद टेम्पलेट्स',
-        'कॅशियरच्या खातेत ऑनलाइन पेमेंट',
-        'सादरीकृत मंडळ वेबपेज:',
-        '  मंडळ इतिहास',
-        '  भंडारा आमंत्रण',
-        '  दैनंदिन ड्रेस कोड',
+        'अमर्याद संग्राहक',
+        'एकाच वेळी ५ उत्सवांपर्यंत चालवा',
+        'प्रत्येक पावतीवर तुमचे ब्रँडिंग',
+        'त्वरित वर्गणीसाठी डायनॅमिक UPI QR',
+        'थकीत पावतीसाठी शेअर करण्यायोग्य पेमेंट लिंक',
+        'सिनेमॅटिक ४-स्लाइड पावती अनुभव',
+        'संपूर्ण अ‍ॅक्टिव्हिटी लॉग',
       ],
-      cta: 'प्लॅटिनम निवडा',
+      cta: 'सुरू करा',
     },
   },
   hi: {
@@ -100,11 +118,12 @@ const PLANS = {
       price: '499',
       period: '/ सीजन',
       features: [
-        '१०० डिजिटल पावती',
-        'खर्च लॉग और बैलेंस ट्रैकिंग',
-        'वर्गणी और ब्याज संग्रह प्रबंधन',
+        'असीमित डिजिटल पावती',
+        '५ तक संग्रहकर्ता',
+        '१ सक्रिय उत्सव या अभियान',
+        'PDF डाउनलोड और प्रिंट',
       ],
-      cta: 'सिल्वर चुनें',
+      cta: 'शुरू करें',
     },
     gold: {
       name: 'गोल्ड',
@@ -112,26 +131,31 @@ const PLANS = {
       period: '/ सीजन',
       features: [
         'असीमित डिजिटल पावती',
-        '४ रसीद टेम्पलेट्स',
-        'आशीर्वाद के साथ व्यक्तिगत रसीद',
-        'कैशियर के खाते में ऑनलाइन भुगतान',
+        '१० तक संग्रहकर्ता',
+        'एक साथ २ उत्सव चलाएं',
+        'हर पावती पर आपकी ब्रांडिंग',
+        'तत्काल संग्रह के लिए डायनामिक UPI QR',
+        'बकाया पावती के लिए शेयर करने योग्य भुगतान लिंक',
+        'सिनेमैटिक ४-स्लाइड पावती अनुभव',
+        'PDF डाउनलोड और प्रिंट',
       ],
-      cta: 'गोल्ड चुनें',
+      cta: 'शुरू करें',
     },
     platinum: {
       name: 'प्लॅटिनम',
-      price: '2,100',
+      price: '1,999',
       period: '/ सीजन',
       features: [
         'असीमित डिजिटल पावती',
-        '४ रसीद टेम्पलेट्स',
-        'कैशियर के खाते में ऑनलाइन भुगतान',
-        'अनुकूलित मंडल वेबपेज:',
-        '  मंडल इतिहास',
-        '  भंडारा आमंत्रण',
-        '  दैनिक ड्रेस कोड',
+        'असीमित संग्रहकर्ता',
+        'एक साथ ५ उत्सवों तक चलाएं',
+        'हर पावती पर आपकी ब्रांडिंग',
+        'तत्काल संग्रह के लिए डायनामिक UPI QR',
+        'बकाया पावती के लिए शेयर करने योग्य भुगतान लिंक',
+        'सिनेमैटिक ४-स्लाइड पावती अनुभव',
+        'पूरा एक्टिविटी लॉग',
       ],
-      cta: 'प्लॅटिनम चुनें',
+      cta: 'शुरू करें',
     },
   },
 };
@@ -366,7 +390,7 @@ export function PricingPlan({
             key={idx}
             style={{
               display: 'flex',
-              alignItems: idx === 0 ? 'flex-start' : 'center',
+              alignItems: 'flex-start',
               gap: '0.75rem',
               fontFamily: 'var(--font-body)',
               fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
@@ -386,7 +410,7 @@ export function PricingPlan({
               style={{
                 flexShrink: 0,
                 color: tierStyles.nameColor,
-                marginTop: idx === 0 && feature.includes('\n') ? '0.25rem' : 0,
+                marginTop: '0.2rem',
               }}
             >
               <path d="M20 6L9 17l-5-5" />
@@ -432,9 +456,23 @@ export function PricingPlan({
         </p>
       ) : null}
 
-      <button
+      <a
+        id={`plan-cta-${tier}`}
+        href={PLAN_LINKS[tier]}
         className="plan-cta"
+        aria-label={
+          language === 'en'
+            ? `Get started with ${plan.name}`
+            : language === 'mr'
+            ? `${plan.name} सह सुरू करा`
+            : `${plan.name} के साथ शुरू करें`
+        }
         style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textDecoration: 'none',
+          textAlign: 'center',
           marginTop: '0.5rem',
           padding: '1rem 2rem',
           background: isHovered ? tierStyles.ctaHoverBg : tierStyles.ctaBg,
@@ -455,9 +493,10 @@ export function PricingPlan({
         onMouseUp={(e) => { e.currentTarget.style.transform = isHovered ? 'translateY(-4px) scale(1.01)' : 'scale(1)'; }}
       >
         {plan.cta}
-      </button>
+      </a>
     </div>
   );
 }
 
-export type { PricingPlanProps };
+export { PLAN_LINKS };
+export type { PricingPlanProps, PlanTier };

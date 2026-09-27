@@ -101,7 +101,7 @@ export function BenefitBalance({
       }}
       aria-labelledby={`benefit-balance-heading-${index}`}
     >
-      <div className="container" style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
+      <div className="container" style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
         <div
           className="benefit-header"
           style={{
@@ -162,9 +162,11 @@ export function BenefitBalance({
           className="balance-cards"
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            gap: '1.5rem',
+            flexDirection: 'row',
+            gap: '1.25rem',
             alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
           }}
         >
           <BalanceCard
@@ -180,22 +182,22 @@ export function BenefitBalance({
           <div
             className="balance-operator"
             style={{
-              width: '56px',
-              height: '56px',
+              width: '52px',
+              height: '52px',
               borderRadius: '50%',
               background: 'rgba(201, 162, 39, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: '0.5rem',
+              flexShrink: 0,
               opacity: isVisible ? 1 : 0,
-              transform: isVisible ? 'scale(1) rotate(0deg)' : 'scale(0.8) rotate(-90deg)',
+              transform: isVisible ? 'scale(1)' : 'scale(0.8)',
               transition: prefersReducedMotion ? 'opacity 0.3s ease, transform 0.3s ease' : 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s',
             }}
-            aria-hidden="true"
+            aria-label="minus"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-brass)" strokeWidth="2">
-              <path d="M12 5v14M5 12h14" />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-brass)" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M5 12h14" />
             </svg>
           </div>
 
@@ -212,23 +214,22 @@ export function BenefitBalance({
           <div
             className="balance-equals"
             style={{
-              width: '56px',
-              height: '56px',
+              width: '52px',
+              height: '52px',
               borderRadius: '50%',
               background: 'rgba(167, 54, 40, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: '0.5rem',
-              marginBottom: '0.5rem',
+              flexShrink: 0,
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? 'scale(1)' : 'scale(0.8)',
               transition: prefersReducedMotion ? 'opacity 0.3s ease, transform 0.3s ease' : 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s',
             }}
-            aria-hidden="true"
+            aria-label="equals"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-sindoor)" strokeWidth="2.5">
-              <path d="M5 12h14M5 12h14" />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-sindoor)" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M5 9h14M5 15h14" />
             </svg>
           </div>
 
@@ -241,48 +242,111 @@ export function BenefitBalance({
             prefersReducedMotion={prefersReducedMotion}
             variant="balance"
           />
+        </div>
 
-          <div
-            className="balance-note"
-            style={{
-              marginTop: '2rem',
-              padding: '1.5rem 2rem',
-              background: 'rgba(167, 54, 40, 0.06)',
-              borderRadius: '12px',
-              border: '1px solid rgba(201, 162, 39, 0.15)',
-              maxWidth: '600px',
-              opacity: isVisible ? 1 : 0,
-              transform: isVisible ? 'translateY(0)' : 'translateY(16px)',
-              transition: prefersReducedMotion ? 'opacity 0.3s ease, transform 0.3s ease' : 'opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s',
-            }}
-          >
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.9375rem', fontWeight: 400, lineHeight: 1.6, color: 'var(--color-ink-soft)' }}>
-              {common.balanceNote}
-            </p>
-          </div>
+        <div
+          className="balance-note"
+          style={{
+            margin: '2.5rem auto 0',
+            padding: '1.5rem 2rem',
+            background: 'rgba(167, 54, 40, 0.06)',
+            borderRadius: '12px',
+            border: '1px solid rgba(201, 162, 39, 0.15)',
+            maxWidth: '600px',
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? 'translateY(0)' : 'translateY(16px)',
+            transition: prefersReducedMotion ? 'opacity 0.3s ease, transform 0.3s ease' : 'opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s',
+          }}
+        >
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.9375rem', fontWeight: 400, lineHeight: 1.6, color: 'var(--color-ink-soft)' }}>
+            {common.balanceNote}
+          </p>
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
-          .benefit-balance {
-            padding: 2.75rem 1.25rem !important;
-          }
-          .balance-visual {
-            gap: 0.75rem !important;
+        @media (max-width: 1024px) {
+          .balance-cards {
+            gap: 0.875rem !important;
           }
           .balance-card {
-            padding: 1.25rem 1rem !important;
-            width: min(320px, 92vw) !important;
+            padding: 2rem 1rem !important;
+          }
+          .balance-card-amount {
+            font-size: clamp(1.4rem, 2.5vw, 2.25rem) !important;
           }
           .balance-operator,
           .balance-equals {
             width: 44px !important;
             height: 44px !important;
           }
+          .balance-operator svg,
+          .balance-equals svg {
+            width: 18px !important;
+            height: 18px !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .benefit-balance {
+            padding: 3rem 1rem !important;
+          }
+          .balance-cards {
+            gap: 0.5rem !important;
+          }
+          .balance-card {
+            padding: 1.25rem 0.5rem !important;
+            border-radius: 12px !important;
+          }
+          .balance-card-label {
+            font-size: 0.7rem !important;
+            letter-spacing: 0.08em !important;
+          }
+          .balance-card-amount {
+            font-size: clamp(1rem, 3.4vw, 1.35rem) !important;
+          }
+          .balance-operator,
+          .balance-equals {
+            width: 32px !important;
+            height: 32px !important;
+          }
+          .balance-operator svg,
+          .balance-equals svg {
+            width: 14px !important;
+            height: 14px !important;
+          }
           .balance-note {
-            margin-top: 1.25rem !important;
-            padding: 1rem !important;
+            margin-top: 1.5rem !important;
+            padding: 1rem 1.25rem !important;
+          }
+        }
+        @media (max-width: 380px) {
+          .benefit-balance {
+            padding: 2.5rem 0.5rem !important;
+          }
+          .balance-cards {
+            gap: 0.25rem !important;
+          }
+          .balance-card {
+            padding: 0.875rem 0.25rem !important;
+            border-radius: 10px !important;
+            gap: 0.5rem !important;
+          }
+          .balance-card-label {
+            font-size: 0.6rem !important;
+            letter-spacing: 0.04em !important;
+          }
+          .balance-card-amount {
+            font-size: clamp(0.8rem, 3.2vw, 1rem) !important;
+          }
+          .balance-operator,
+          .balance-equals {
+            width: 24px !important;
+            height: 24px !important;
+          }
+          .balance-operator svg,
+          .balance-equals svg {
+            width: 12px !important;
+            height: 12px !important;
           }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -330,16 +394,18 @@ function BalanceCard({
     <div
       className="balance-card"
       style={{
+        flex: '1 1 0',
+        minWidth: 0,
+        maxWidth: '340px',
         width: '100%',
-        maxWidth: '420px',
-        padding: '2.5rem 2rem',
+        padding: '2.5rem 1.5rem',
         background: bgStyles[variant],
         borderRadius: '16px',
         border: `1px solid ${borderColor}`,
         boxShadow: shadow,
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem',
+        gap: '0.875rem',
         alignItems: 'center',
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.95)',
@@ -349,6 +415,7 @@ function BalanceCard({
       }}
     >
       <p
+        className="balance-card-label"
         style={{
           fontFamily: 'var(--font-body)',
           fontSize: '0.875rem',
@@ -361,12 +428,14 @@ function BalanceCard({
         {label}
       </p>
       <p
+        className="balance-card-amount"
         style={{
           fontFamily: 'var(--font-heading)',
-          fontSize: 'clamp(3rem, 6vw, 5rem)',
+          fontSize: 'clamp(1.75rem, 2.8vw, 3rem)',
           fontWeight: 500,
           lineHeight: 1.1,
           color: amountColor,
+          whiteSpace: 'nowrap',
         }}
       >
         {formatAmount(amount)}
